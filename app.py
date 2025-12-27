@@ -1,9 +1,16 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 from PIL import Image
 import io
 from food_detection import analyze_food_image
+from sleepAnalytics import analyze_sleep
+
+from dotenv import load_dotenv
+load_dotenv()  # This will load the variables from .env
+
 
 app = Flask(__name__)
+CORS(app)
 
 # Set a limit for the maximum allowed payload (e.g., 16MB)
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
@@ -36,6 +43,22 @@ def process_image():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+@app.route('/sleepAnalysis', methods=['POST'])
+def sleep_analysis():
+    try:
+        sleep_data = request.get_json()
+
+        if not sleep_data:
+            return jsonify({"error": "Request body is required"}), 400
+
+        result = analyze_sleep(sleep_data)
+
+        return jsonify(result), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)

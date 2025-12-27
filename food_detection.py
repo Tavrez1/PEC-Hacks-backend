@@ -7,7 +7,6 @@ import io
 
 # --- CONFIGURATION ---
 # Replace with your actual API key or set it as an environment variable
-API_KEY = os.getenv("API_KEY")
 
 def analyze_food_image(image):
     client = genai.Client(api_key=API_KEY)
